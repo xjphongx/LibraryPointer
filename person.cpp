@@ -8,7 +8,7 @@ string Person::getFirstName()
 {  
     return firstName;
 }
-string Person::getFirstName()
+string Person::getLastName()
 {
     return lastName;
 }

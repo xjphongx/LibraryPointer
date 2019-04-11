@@ -24,7 +24,7 @@ void printMenu(){
 
 int main()
 {
-    vector <book *> books;
+    vector <Book *> books;
     vector <Person *> cardholders;
 
     //teacher tip: dont forget to handle the enter key; still in input stream
