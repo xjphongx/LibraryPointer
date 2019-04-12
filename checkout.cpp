@@ -21,11 +21,18 @@ void printMenu(){
     cout << "8.  Exit system" << endl;
     cout << "Please enter a choice: ";
 }
+void readData(vector<Book *> books,vector<Person *> cardholders);
 
 int main()
 {
     vector <Book *> books;
     vector <Person *> cardholders;
+
+    readData(books,cardholders);
+
+
+
+
 
     //teacher tip: dont forget to handle the enter key; still in input stream
     int choice;
@@ -37,6 +44,10 @@ int main()
         {
             case 1:
                 //book check out
+                int id;
+                cout << "Please enter the card ID:";
+                cin >> id;
+
                 break;
             case 2:
                 //book return
@@ -74,4 +85,76 @@ int main()
 
 //add ending here
     return 0;
+}
+
+void readData(vector<Book *> books,vector <Person *> cardholders)
+{
+    //all for the book vector
+    ifstream bookFile;
+    bookFile.open("books.txt");
+
+    //16582 bookID
+    //1984  title
+    //George Orwell  author
+    //Biography category
+    //
+    int id;
+    string title;
+    string author;
+    string category; 
+    string space; //just takes in space for no reason
+    while(!bookFile.eof())
+    {
+        bookFile>>id; bookFile.ignore(); //skips \n
+        getline(bookFile,title); 
+        getline(bookFile,author); 
+        getline(bookFile,category);
+        getline(bookFile,space);
+
+    /*check if it reads right
+        cout<< "id: " <<id <<endl;;
+        cout << "title " << title<<endl;
+        cout << "author "<< author<<endl;
+        cout << "category "<< category<<endl;
+        cout <<endl;
+        THIS TEST WORKS
+    */
+        //create temp pointer ob to push back
+        Book *tempBookPtr = new Book(id,title,author,category); 
+        /* MIGHT NOT NEED THIS OR THE SETTER FUNCTIONS
+        tempObjPtr->setId(id);
+        tempObjPtr->setTitle(title);
+        tempObjPtr->setAuthor(author);
+        tempObjPtr->setCategory(category);
+    */
+        books.push_back(tempBookPtr);
+        delete tempBookPtr; //to free up memory
+    }
+    bookFile.close();
+
+    /*
+        reading in cardholder/person information 
+    */
+    ifstream personFile;
+    personFile.open("persons.txt");
+
+    //example of read information
+    //1000 1 Lennon Jennings cardid active firstname lastname
+    int cardid;
+    bool active; //needed for bool 
+    string firstname, lastname;
+    while(!personFile.eof())
+    {
+        personFile >> cardid;
+        personFile >> active;
+        personFile >> firstname;
+        personFile >> lastname;
+        Person * tempPersonPtr = new Person(cardid,active,firstname,lastname);
+        
+        //push back later
+        cardholders.push_back(tempPersonPtr); // pushing a pointer back
+        delete tempPersonPtr;
+    
+    }
+    personFile.close();
 }
