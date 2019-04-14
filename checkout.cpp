@@ -30,10 +30,6 @@ int main()
 
     readData(books,cardholders);
 
-
-
-
-
     //teacher tip: dont forget to handle the enter key; still in input stream
     int choice;
     do
@@ -47,6 +43,8 @@ int main()
                 int id;
                 cout << "Please enter the card ID:";
                 cin >> id;
+                //check if card id works
+                
 
                 break;
             case 2:
