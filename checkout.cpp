@@ -31,6 +31,9 @@ int main()
     readData(books,cardholders);
 
     //teacher tip: dont forget to handle the enter key; still in input stream
+    string fullname;//this is needed for conditon check
+    int bookid;
+
     int choice;
     do
     {
@@ -44,19 +47,118 @@ int main()
                 cout << "Please enter the card ID:";
                 cin >> id;
                 //check if card id works
-                
+                int index =0;
+                int index2=0;
+                int index3=0;
+                bool idnotFound = true;
+                bool namenotFound = true;
+                bool booknotFound = true;
+                while(index < cardholders.size())
+                {
+                    if(id == cardholders.at(index)->getId())
+                    {
+                        idnotFound=false; //false because id has been found
+                        cout << "Cardholder: ";
+                        cin >> fullname;
+                        while(index2 < cardholders.size())
+                        {
+                            if(fullname == cardholders.at(index2)->fullName())
+                            {
+                                namenotFound=false;
+                                cout <<"Please enter the book ID: ";
+                                cin>>bookid;
+                                while(index3 < books.size())
+                                {
+                                    if(bookid == books.at(index3)->getId())
+                                    {
+                                        booknotFound = false;
+                                        if(books.at(index3)->getPersonPtr() != nullptr)
+                                        {
+                                            cout << "Book already checked out" <<endl;
+                                            break;
+                                        }
 
+
+                                    }
+
+
+                                    index3++;
+                                }
+
+
+                            }
+
+                            index2++;
+                        }
+
+                    }
+                    
+                    index++;
+                }
+                if(idnotFound)
+                {
+                    cout<< "Card ID not found"<<endl;
+                }else if (namenotFound)
+                {
+                    cout<< "Name not found"<<endl;
+                }else if (booknotFound)
+                {
+                    cout << "Book ID not found"<<endl;
+                }
                 break;
-            case 2:
-                //book return
+
+            case 2://book return : goes through every book id and checks
+                cout << "Please enter the book ID to return: ";
+                cin >> bookid;
+                bool notFound = true; 
+                int index4 = 0;
+                while(index4 < books.size())
+                {
+                    if(books.at(index4)->getId() == bookid)
+                    {
+                        notFound =false;
+                        cout<< "Title: "<< books.at(index4)->getTitle() <<endl;
+                        //set the personptr to null to complete return
+                        books.at(index4)->setPersonPtr(nullptr);
+                        cout << "Return Completed"<<endl;
+                    }
+                    index4++;
+                }
+                if(notFound)
+                {
+                    cout << "Book ID not found" <<endl;
+                }
                 break;
-            case 3:
-                //view all available books
+            case 3://view all available books
+                cout<< "List of Available books"<<endl;
+                bool noBooksAvailable = true;
+                int index5 =0;
+                while(index5 < books.size())
+                {
+                    if(books.at(index5)->getPersonPtr() == nullptr)
+                    {
+                        cout << "Book ID: "<< books.at(index5)->getId()<<endl;
+                        cout << "Title: "<< books.at(index5)->getTitle() <<endl;
+                        cout << "Author: "<< books.at(index5)->getAuthor() <<endl;
+                        cout << "Category: "<< books.at(index5)->getCategory()<<endl;
+                        cout <<endl;
+                        noBooksAvailable = false;
+                    }
+                }
+                if(noBooksAvailable == true)
+                {
+                    cout<< "No available books"<<endl;
+                }
+                
                 break;
-            case 4:
-                //view all outstanding rentals
+            case 4://view all outstanding rentals
+                
+                
+                
+                
+                
                 break;
-            case 5:
+     /*       case 5:
                 //view outstanding rentals for a cardholder
                 break;
             case 6:
@@ -68,10 +170,12 @@ int main()
             case 8:
                 //must update records in files here before exiting the program
                 break;
-            default:
+    */        default:
                 cout <<"Invalid entry" << endl;
                 break;
-        }
+    
+        }//end of switch 
+
         cout <<endl;
     } while (choice != 8);
     
@@ -83,8 +187,8 @@ int main()
 
 //add ending here
     return 0;
-}
 
+}
 void readData(vector<Book *> books,vector <Person *> cardholders)
 {
     //all for the book vector
@@ -156,3 +260,4 @@ void readData(vector<Book *> books,vector <Person *> cardholders)
     }
     personFile.close();
 }
+    
