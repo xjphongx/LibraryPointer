@@ -42,6 +42,7 @@ int main()
         switch(choice)
         {
             case 1:
+            {
                 //book check out
                 int id;
                 cout << "Please enter the card ID:";
@@ -106,8 +107,10 @@ int main()
                     cout << "Book ID not found"<<endl;
                 }
                 break;
+            }
 
             case 2://book return : goes through every book id and checks
+            {
                 cout << "Please enter the book ID to return: ";
                 cin >> bookid;
                 bool notFound = true; 
@@ -129,7 +132,9 @@ int main()
                     cout << "Book ID not found" <<endl;
                 }
                 break;
+            }
             case 3://view all available books
+            {
                 cout<< "List of Available books"<<endl;
                 bool noBooksAvailable = true;
                 int index5 =0;
@@ -151,17 +156,47 @@ int main()
                 }
                 
                 break;
+            }
             case 4://view all outstanding rentals
+            {
+                cout << "Printing out the list of checked out books" <<endl;
+                int index6 = 0;
+                bool noRentals = true;
+                while(index6 < books.size())
+                {
+                    if(books.at(index6)->getPersonPtr() != nullptr)
+                    {
+                        noRentals = false;
+                        cout << "Book ID: "<< books.at(index6)->getId()<<endl;
+                        cout << "Title: "<< books.at(index6)->getTitle() <<endl;
+                        cout << "Author: "<< books.at(index6)->getAuthor() <<endl;
+                        cout << "Cardholder: "<< books.at(index6)->getPersonPtr()->fullName()<<endl;
+                        cout << "Card ID: " <<books.at(index6)->getPersonPtr()->getId()<<endl;
+                        
+                        cout <<endl;
+                    }
+                    index6++;
+                }
+                if(noRentals == true)
+                {
+                    cout<<"No outstanding rentals"<<endl;
+                }
+                break;
+            }
+            case 5://view outstanding rentals for a cardholder
+            {
+
+            
+
+                 
                 
                 
                 
                 
                 
                 break;
-     /*       case 5:
-                //view outstanding rentals for a cardholder
-                break;
-            case 6:
+            }
+  /*          case 6:
                 //open new library card
                 break;
             case 7:
@@ -213,22 +248,18 @@ void readData(vector<Book *> books,vector <Person *> cardholders)
         getline(bookFile,category);
         getline(bookFile,space);
 
-    /*check if it reads right
+    
         cout<< "id: " <<id <<endl;;
         cout << "title " << title<<endl;
         cout << "author "<< author<<endl;
         cout << "category "<< category<<endl;
         cout <<endl;
-        THIS TEST WORKS
-    */
+     
         //create temp pointer ob to push back
         Book *tempBookPtr = new Book(id,title,author,category); 
-        /* MIGHT NOT NEED THIS OR THE SETTER FUNCTIONS
-        tempObjPtr->setId(id);
-        tempObjPtr->setTitle(title);
-        tempObjPtr->setAuthor(author);
-        tempObjPtr->setCategory(category);
-    */
+        
+        cout << tempBookPtr->getId();
+ 
         books.push_back(tempBookPtr);
         delete tempBookPtr; //to free up memory
     }
@@ -253,8 +284,20 @@ void readData(vector<Book *> books,vector <Person *> cardholders)
         personFile >> lastname;
         Person * tempPersonPtr = new Person(cardid,active,firstname,lastname);
         
+        //testing
+        cout<< "card id: " <<cardid <<endl;
+        cout << "active? " << active<<endl;
+        cout << "first name "<< firstname<<endl;
+        cout << "last name "<< lastname<<endl;
+        cout <<endl;
+
+        cout << tempPersonPtr->getId();
+
         //push back later
         cardholders.push_back(tempPersonPtr); // pushing a pointer back
+        
+        
+
         delete tempPersonPtr;
     
     }
