@@ -263,12 +263,77 @@ int main()
                 delete newMemberPtr;
                 break;
             }
-      /*      case 7:
-                //close library card
-        */        break;
-            case 8:
-                //must update records in files here before exiting the program
+            case 7://close library card
+            {   
+                int cardid;
+                char response;
+                bool idNotFound = true;
+                cout << "Please enter the card ID: ";
+                cin >> cardid;
+                
+                for(int p = 0; p<cardholders.at(p)->getId();p++)
+                {
+
+                    if(cardid == cardholders.at(p)->getId())
+                    {
+                        cout<< "Cardholder: " << cardholders.at(p)->fullName()<<endl;
+                        if(cardholders.at(p)->isActive()==false)
+                        {
+                            cout<<"Card ID is already inactive"<<endl;
+                            idNotFound = false;
+                            break;
+                        }
+                        else 
+                        {
+                            cout << "Are you sure you want to deactivate this card\n(y/n)?"<<endl;
+                            cin>> response; 
+                            idNotFound=false;
+                            if(response == 'y')
+                            {
+                                cardholders.at(p)->setActive(false);
+                                cout<< "Card ID deactivated"<<endl;
+                                break;
+                            }
+                            else 
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(idNotFound==true)
+                {
+                    cout<<"Card ID not found"<<endl;
+                }
                 break;
+            }
+            case 8://must update records in files here before exiting the program    
+            {
+                ofstream outPersonFile;
+                outPersonFile.open("persons.txt");
+                for (int t = 0; cardholders.size();t++)
+                {
+                    outPersonFile << cardholders.at(t)->getId() << " ";
+                    outPersonFile << cardholders.at(t)->isActive() << " ";
+                    outPersonFile << cardholders.at(t)->fullName() <<endl;
+                }
+                outPersonFile.close();
+                //rental what books are rented out to whom??
+                ofstream rentalFile;
+                rentalFile.open("rentals.txt");
+                
+                for(int s = 0; s < books.size();s++)
+                {
+
+                    if(books.at(s)->getPersonPtr() != nullptr)
+                    {
+                        rentalFile << books.at(s)->getId() << " ";
+                        rentalFile << books.at(s)->getPersonPtr()->getId()<<endl;
+                    }
+                }
+                rentalFile.close();
+                break;
+            }
             default:
                 cout <<"Invalid entry" << endl;
                 break;
@@ -278,12 +343,6 @@ int main()
         cout <<endl;
     } while (choice != 8);
     
-
-
-
-
-
-
     //add ending here
     return 0;
 
