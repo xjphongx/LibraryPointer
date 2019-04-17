@@ -21,7 +21,8 @@ void printMenu(){
     cout << "8.  Exit system" << endl;
     cout << "Please enter a choice: ";
 }
-void readData(vector<Book *> books,vector<Person *> cardholders);
+void readData(vector<Book *> & books,vector<Person *> &cardholders);
+//DONT FORGET TO PASS BY REFERENCE
 
 int main()
 {
@@ -29,6 +30,21 @@ int main()
     vector <Person *> cardholders;
 
     readData(books,cardholders);
+    cout << "book vector size: " << books.size()<<endl;
+    cout << "cardholders vector size " << cardholders.size()<<endl;
+    
+    //testing loop to find all ids in the vector
+    for(int z = 0; z < cardholders.size()-1;z++)
+    {
+
+        cout << "test "<< z<<" "<<endl;;
+        cout<<"id " << cardholders.at(z)->getId() <<endl;
+        cout << "firstname " << cardholders.at(z)->getFirstName() <<endl;
+        cout << "lastname " << cardholders.at(z)->getLastName() <<endl;
+        cout << "fullname " <<cardholders.at(z)->fullName() <<endl;
+        
+
+    }
 
     //teacher tip: dont forget to handle the enter key; still in input stream
     string fullname;//this is needed for conditon check
@@ -45,64 +61,59 @@ int main()
             {
                 //book check out
                 int id;
-                cout << "Please enter the card ID:";
+                cout << "Please enter the card ID: ";
                 cin >> id;
+                cin.ignore();
                 //check if card id works
-                int index =0;
-                int index2=0;
-                int index3=0;
                 bool idnotFound = true;
                 bool namenotFound = true;
                 bool booknotFound = true;
-                while(index < cardholders.size())
+                for(int a = 0; a < cardholders.size();a++)
                 {
-                    if(id == cardholders.at(index)->getId())
+                    if(id == cardholders.at(a)->getId()&&cardholders.at(a)->isActive())
                     {
                         idnotFound=false; //false because id has been found
                         cout << "Cardholder: ";
-                        cin >> fullname;
-                        while(index2 < cardholders.size())
+                        getline(cin, fullname);
+                        for(int b = 0; b < cardholders.size();b++)
                         {
-                            if(fullname == cardholders.at(index2)->fullName())
+                            if(fullname == cardholders.at(b)->fullName())
                             {
                                 namenotFound=false;
                                 cout <<"Please enter the book ID: ";
                                 cin>>bookid;
-                                while(index3 < books.size())
+                                /*
+                                    input duplication error 2x but the rental still works
+                                */
+                                for(int c = 0; c < books.size();c++)
                                 {
-                                    if(bookid == books.at(index3)->getId())
+                                    if(bookid == books.at(c)->getId())
                                     {
                                         booknotFound = false;
-                                        if(books.at(index3)->getPersonPtr() != nullptr)
+                                        if(books.at(c)->getPersonPtr() != nullptr)
                                         {
-                                            cout << "Book already checked out" <<endl;
+                                            cout << "Rental Completed" <<endl;
                                             break;
+                                        }else
+                                        {
+                                            //checking out the book
+                                            books.at(c)->setPersonPtr(cardholders.at(b));
                                         }
-
+                                        
 
                                     }
-
-
-                                    index3++;
                                 }
-
-
                             }
-
-                            index2++;
                         }
-
                     }
-                    
-                    index++;
                 }
-                if(idnotFound)
+                if(idnotFound==true)
                 {
                     cout<< "Card ID not found"<<endl;
-                }else if (namenotFound)
+                }else if (namenotFound==true)
                 {
                     cout<< "Name not found"<<endl;
-                }else if (booknotFound)
+                }else if (booknotFound==true)
                 {
                     cout << "Book ID not found"<<endl;
                 }
@@ -114,18 +125,16 @@ int main()
                 cout << "Please enter the book ID to return: ";
                 cin >> bookid;
                 bool notFound = true; 
-                int index4 = 0;
-                while(index4 < books.size())
+                for(int d = 0; d < books.size();d++)
                 {
-                    if(books.at(index4)->getId() == bookid)
+                    if(bookid==books.at(d)->getId())
                     {
                         notFound =false;
-                        cout<< "Title: "<< books.at(index4)->getTitle() <<endl;
+                        cout<< "Title: "<< books.at(d)->getTitle() <<endl;
                         //set the personptr to null to complete return
-                        books.at(index4)->setPersonPtr(nullptr);
+                        books.at(d)->setPersonPtr(nullptr);
                         cout << "Return Completed"<<endl;
                     }
-                    index4++;
                 }
                 if(notFound)
                 {
@@ -135,17 +144,16 @@ int main()
             }
             case 3://view all available books
             {
-                cout<< "List of Available books"<<endl;
+                cout<< "\nList of Available books"<<endl;
                 bool noBooksAvailable = true;
-                int index5 =0;
-                while(index5 < books.size())
+                for(int j = 0; j< books.size();j++)
                 {
-                    if(books.at(index5)->getPersonPtr() == nullptr)
+                    if(books.at(j)->getPersonPtr() == nullptr)
                     {
-                        cout << "Book ID: "<< books.at(index5)->getId()<<endl;
-                        cout << "Title: "<< books.at(index5)->getTitle() <<endl;
-                        cout << "Author: "<< books.at(index5)->getAuthor() <<endl;
-                        cout << "Category: "<< books.at(index5)->getCategory()<<endl;
+                        cout << "Book ID: "<< books.at(j)->getId()<<endl;
+                        cout << "Title: "<< books.at(j)->getTitle() <<endl;
+                        cout << "Author: "<< books.at(j)->getAuthor() <<endl;
+                        cout << "Category: "<< books.at(j)->getCategory()<<endl;
                         cout <<endl;
                         noBooksAvailable = false;
                     }
@@ -159,23 +167,20 @@ int main()
             }
             case 4://view all outstanding rentals
             {
-                cout << "Printing out the list of checked out books" <<endl;
-                int index6 = 0;
                 bool noRentals = true;
-                while(index6 < books.size())
+                for(int e = 0; e < books.size();e++)
                 {
-                    if(books.at(index6)->getPersonPtr() != nullptr)
+                    if(books.at(e)->getPersonPtr() != nullptr)
                     {
                         noRentals = false;
-                        cout << "Book ID: "<< books.at(index6)->getId()<<endl;
-                        cout << "Title: "<< books.at(index6)->getTitle() <<endl;
-                        cout << "Author: "<< books.at(index6)->getAuthor() <<endl;
-                        cout << "Cardholder: "<< books.at(index6)->getPersonPtr()->fullName()<<endl;
-                        cout << "Card ID: " <<books.at(index6)->getPersonPtr()->getId()<<endl;
+                        cout << "Book ID: "<< books.at(e)->getId()<<endl;
+                        cout << "Title: "<< books.at(e)->getTitle() <<endl;
+                        cout << "Author: "<< books.at(e)->getAuthor() <<endl;
+                        cout << "Cardholder: "<< books.at(e)->getPersonPtr()->fullName()<<endl;
+                        cout << "Card ID: " <<books.at(e)->getPersonPtr()->getId()<<endl;
                         
                         cout <<endl;
                     }
-                    index6++;
                 }
                 if(noRentals == true)
                 {
@@ -185,27 +190,86 @@ int main()
             }
             case 5://view outstanding rentals for a cardholder
             {
-
-            
-
-                 
-                
-                
-                
-                
-                
+                int cid;
+                cout<<"Please enter the card ID: ";
+                cin >> cid;
+                //for loop and if statement to check if cardid is valid
+                for(int i = 0; i < cardholders.size();i++)
+                {
+                    /*
+                        if statement error below here
+                    */
+                    if(cid == cardholders.at(i)->getId()&&cardholders.at(i)->isActive())
+                    {
+                        cout<< "Cardholder: "<< cardholders.at(i)->fullName();
+                        //check through the book vector to see if it pointing to this person
+                        for(int k = 0; k < books.size();k++)
+                        {
+                            if(books.at(k)->getPersonPtr()->getId() == cardholders.at(i)->getId())
+                            {
+                                cout<< "Book ID: " << books.at(k)->getId()<<endl;
+                                cout << "Title: " << books.at(k)->getTitle()<<endl;
+                                cout << "Author: "<< books.at(k)->getAuthor()<<endl; 
+                            }
+                        }
+                    }
+                    else
+                    {
+                        cout<< "Card ID is invalid and/or active"<<endl;
+                        break;
+                    }
+                }     
                 break;
             }
-  /*          case 6:
-                //open new library card
+            case 6://open new library card
+            {
+                string fname, lname;
+                cout << "Please enter the first name: ";
+                cin >> fname;
+                cout << "Please enter the last name: ";
+                cin >> lname;
+                string fullname = fname + " "+lname;
+                //find max to give a new user a new card
+                int max = 1000;
+                for( int m = 0; m < cardholders.size()-1;m++)
+                {
+                    if(cardholders.at(m)->getId()<cardholders.at(m+1)->getId())
+                    {
+                        max = cardholders.at(m+1)->getId();
+                    }
+                }
+                int cardid = max+1; //to get to the next number in sequence
+                //this is used to renew a card
+                /*
+                    Slight error; this is extra 
+                */
+                for(int n = 0; n <cardholders.size()-1;n++)
+                {
+                    if(fullname == cardholders.at(n)->fullName())
+                    {//if the name already exist, renew the card
+                        cardholders.at(n)->setActive(true);
+                        cardid = cardholders.at(n)->getId();
+                    }
+
+                }
+                cout<< "Card ID "<< cardid << " active"<<endl;
+                cout << "Cardholder: "<<fname << " "<<lname<<endl;
+                bool act = 1;
+
+                Person *newMemberPtr;
+                newMemberPtr= new Person(cardid, act,fname, lname);
+                cardholders.push_back(newMemberPtr);
+
+                delete newMemberPtr;
                 break;
-            case 7:
+            }
+      /*      case 7:
                 //close library card
-                break;
+        */        break;
             case 8:
                 //must update records in files here before exiting the program
                 break;
-    */        default:
+            default:
                 cout <<"Invalid entry" << endl;
                 break;
     
@@ -220,11 +284,11 @@ int main()
 
 
 
-//add ending here
+    //add ending here
     return 0;
 
 }
-void readData(vector<Book *> books,vector <Person *> cardholders)
+void readData(vector<Book *> &books,vector <Person *> &cardholders)
 {
     //all for the book vector
     ifstream bookFile;
@@ -239,7 +303,9 @@ void readData(vector<Book *> books,vector <Person *> cardholders)
     string title;
     string author;
     string category; 
-    string space; //just takes in space for no reason
+    string space;
+    //create temp pointer ob to push back
+    Book *tempBookPtr;
     while(!bookFile.eof())
     {
         bookFile>>id; bookFile.ignore(); //skips \n
@@ -248,20 +314,17 @@ void readData(vector<Book *> books,vector <Person *> cardholders)
         getline(bookFile,category);
         getline(bookFile,space);
 
-    
+        /*
         cout<< "id: " <<id <<endl;;
         cout << "title " << title<<endl;
         cout << "author "<< author<<endl;
         cout << "category "<< category<<endl;
         cout <<endl;
-     
-        //create temp pointer ob to push back
-        Book *tempBookPtr = new Book(id,title,author,category); 
+        */
         
-        cout << tempBookPtr->getId();
- 
+        tempBookPtr=new Book(id,title,author,category); 
         books.push_back(tempBookPtr);
-        delete tempBookPtr; //to free up memory
+        //delete tempBookPtr; //to free up memory
     }
     bookFile.close();
 
@@ -276,31 +339,32 @@ void readData(vector<Book *> books,vector <Person *> cardholders)
     int cardid;
     bool active; //needed for bool 
     string firstname, lastname;
+    Person * tempPersonPtr; 
     while(!personFile.eof())
     {
         personFile >> cardid;
         personFile >> active;
         personFile >> firstname;
         personFile >> lastname;
-        Person * tempPersonPtr = new Person(cardid,active,firstname,lastname);
         
-        //testing
+        /*testing if input is correct
         cout<< "card id: " <<cardid <<endl;
         cout << "active? " << active<<endl;
         cout << "first name "<< firstname<<endl;
         cout << "last name "<< lastname<<endl;
         cout <<endl;
+        */
 
-        cout << tempPersonPtr->getId();
-
-        //push back later
+        tempPersonPtr = new Person(cardid,active,firstname,lastname);
         cardholders.push_back(tempPersonPtr); // pushing a pointer back
-        
-        
+        //delete tempPersonPtr;
+            /*
+                confusion: if i dont delete the tempPersonPtr then
+                the for loop test in the main function works
 
-        delete tempPersonPtr;
-    
+            */
     }
+    
     personFile.close();
 }
     

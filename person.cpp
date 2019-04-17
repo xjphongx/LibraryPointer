@@ -25,7 +25,7 @@ void Person::setActive(bool act)
 }
 bool Person::isActive()
 {
-    if(active == true)
+    if(active == 1)
         return true;
     else
     {
