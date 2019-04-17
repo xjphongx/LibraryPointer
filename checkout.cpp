@@ -67,7 +67,7 @@ int main()
                 bool idnotFound = true;
                 bool namenotFound = true;
                 bool booknotFound = true;
-                for(int a = 0; a < cardholders.size();a++)
+                for(int a = 0; a < cardholders.size()-1;a++)
                 {
                     if(id == cardholders.at(a)->getId()&&cardholders.at(a)->isActive())
                     {
@@ -78,7 +78,7 @@ int main()
                         /*
                             input duplication error 2x but the rental still works
                         */
-                        for(int c = 0; c < books.size();c++)
+                        for(int c = 0; c < books.size()-1;c++)
                         {
                             if(bookid == books.at(c)->getId())
                             {
@@ -118,7 +118,7 @@ int main()
                 cout << "Please enter the book ID to return: ";
                 cin >> bookid;
                 bool notFound = true; 
-                for(int d = 0; d < books.size();d++)
+                for(int d = 0; d < books.size()-1;d++)
                 {
                     if(bookid==books.at(d)->getId())
                     {
@@ -161,7 +161,7 @@ int main()
             case 4://view all outstanding rentals
             {
                 bool noRentals = true;
-                for(int e = 0; e < books.size();e++)
+                for(int e = 0; e < books.size()-1;e++)
                 {
                     if(books.at(e)->getPersonPtr() != nullptr)
                     {
@@ -268,7 +268,7 @@ int main()
                 cout << "Please enter the card ID: ";
                 cin >> cardid;
                 
-                for(int p = 0; p<cardholders.at(p)->getId();p++)
+                for(int p = 0; p<cardholders.at(p)->getId()-1;p++)
                 {
 
                     if(cardid == cardholders.at(p)->getId())
@@ -308,7 +308,7 @@ int main()
             {
                 ofstream outPersonFile;
                 outPersonFile.open("persons.txt");
-                for (int t = 0; t<cardholders.size()-3;t++)
+                for (int t = 0; t<cardholders.size()-2;t++) //<<bug here
                 {
                     outPersonFile << cardholders.at(t)->getId() << " ";
                     outPersonFile << cardholders.at(t)->isActive() << " ";
@@ -421,6 +421,8 @@ void readData(vector<Book *> &books,vector <Person *> &cardholders)
             */
     }
     
+    delete tempBookPtr;
+    delete tempPersonPtr;
     personFile.close();
 }
     
