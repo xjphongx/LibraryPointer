@@ -30,9 +30,9 @@ int main()
     vector <Person *> cardholders;
 
     readData(books,cardholders);
-    cout << "book vector size: " << books.size()<<endl;
-    cout << "cardholders vector size " << cardholders.size()<<endl;
-    
+    /*used to find the sizes
+    //cout << "book vector size: " << books.size()<<endl;
+    //cout << "cardholders vector size " << cardholders.size()<<endl;
     //testing loop to find all ids in the vector
     for(int z = 0; z < cardholders.size()-1;z++)
     {
@@ -42,9 +42,8 @@ int main()
         cout << "firstname " << cardholders.at(z)->getFirstName() <<endl;
         cout << "lastname " << cardholders.at(z)->getLastName() <<endl;
         cout << "fullname " <<cardholders.at(z)->fullName() <<endl;
-        
-
     }
+    */
 
     //teacher tip: dont forget to handle the enter key; still in input stream
     string fullname;//this is needed for conditon check
@@ -73,46 +72,40 @@ int main()
                     if(id == cardholders.at(a)->getId()&&cardholders.at(a)->isActive())
                     {
                         idnotFound=false; //false because id has been found
-                        cout << "Cardholder: ";
-                        getline(cin, fullname);
-                        for(int b = 0; b < cardholders.size();b++)
+                        cout << "Cardholder: "<<cardholders.at(a)->fullName();
+                        cout <<"\nPlease enter the book ID: ";
+                        cin>>bookid;
+                        /*
+                            input duplication error 2x but the rental still works
+                        */
+                        for(int c = 0; c < books.size();c++)
                         {
-                            if(fullname == cardholders.at(b)->fullName())
+                            if(bookid == books.at(c)->getId())
                             {
-                                namenotFound=false;
-                                cout <<"Please enter the book ID: ";
-                                cin>>bookid;
-                                /*
-                                    input duplication error 2x but the rental still works
-                                */
-                                for(int c = 0; c < books.size();c++)
+                                booknotFound = false;
+                                if(books.at(c)->getPersonPtr() != nullptr)
                                 {
-                                    if(bookid == books.at(c)->getId())
-                                    {
-                                        booknotFound = false;
-                                        if(books.at(c)->getPersonPtr() != nullptr)
-                                        {
-                                            cout << "Rental Completed" <<endl;
-                                            break;
-                                        }else
-                                        {
-                                            //checking out the book
-                                            books.at(c)->setPersonPtr(cardholders.at(b));
-                                        }
+                                    cout << "Book already checked out" <<endl;
+                                    break;
+                                }else
+                                {
+                                    //checking out the book
+                                    cout<< "Title: "<< books.at(c)->getTitle()<<endl;
+                                    books.at(c)->setPersonPtr(cardholders.at(a));
+                                    cout<< "Rental Completed"<<endl;
+                                    break;
+                                }
                                         
 
-                                    }
-                                }
                             }
                         }
+                            
+                        
                     }
                 }
                 if(idnotFound==true)
                 {
                     cout<< "Card ID not found"<<endl;
-                }else if (namenotFound==true)
-                {
-                    cout<< "Name not found"<<endl;
                 }else if (booknotFound==true)
                 {
                     cout << "Book ID not found"<<endl;
@@ -190,28 +183,32 @@ int main()
             }
             case 5://view outstanding rentals for a cardholder
             {
+                
                 int cid;
                 cout<<"Please enter the card ID: ";
                 cin >> cid;
+                cin.ignore();
                 //for loop and if statement to check if cardid is valid
-                for(int i = 0; i < cardholders.size();i++)
+                for(int i = 0; i < cardholders.size()-1;i++)
                 {
                     /*
                         if statement error below here
                     */
-                    if(cid == cardholders.at(i)->getId()&&cardholders.at(i)->isActive())
+                    if(cid == cardholders.at(i)->getId())
                     {
                         cout<< "Cardholder: "<< cardholders.at(i)->fullName();
                         //check through the book vector to see if it pointing to this person
-                        for(int k = 0; k < books.size();k++)
+                        for(int k = 0; k < books.size()-1;k++)
                         {
                             if(books.at(k)->getPersonPtr()->getId() == cardholders.at(i)->getId())
                             {
                                 cout<< "Book ID: " << books.at(k)->getId()<<endl;
                                 cout << "Title: " << books.at(k)->getTitle()<<endl;
                                 cout << "Author: "<< books.at(k)->getAuthor()<<endl; 
+                                
                             }
                         }
+                        break;
                     }
                     else
                     {
@@ -311,7 +308,7 @@ int main()
             {
                 ofstream outPersonFile;
                 outPersonFile.open("persons.txt");
-                for (int t = 0; cardholders.size();t++)
+                for (int t = 0; t<cardholders.size()-3;t++)
                 {
                     outPersonFile << cardholders.at(t)->getId() << " ";
                     outPersonFile << cardholders.at(t)->isActive() << " ";
@@ -322,7 +319,7 @@ int main()
                 ofstream rentalFile;
                 rentalFile.open("rentals.txt");
                 
-                for(int s = 0; s < books.size();s++)
+                for(int s = 0; s < books.size()-1;s++)
                 {
 
                     if(books.at(s)->getPersonPtr() != nullptr)
