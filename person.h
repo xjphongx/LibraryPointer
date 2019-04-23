@@ -22,6 +22,9 @@ class Person
         void setActive(bool act);
         bool isActive();
         string fullName();
+        // add a search function because searching for person id is always repeated
+    
+        
 
 };
 #endif //end the person.h file
